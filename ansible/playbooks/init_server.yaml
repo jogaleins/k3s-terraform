@@ -1,0 +1,21 @@
+---
+- hosts: master
+  gather_facts: false
+  become: yes
+
+
+  tasks:
+    - name: Including the variables
+      include_vars:
+        file: vars.yaml
+
+    - name: Initialize kube cluster
+      shell: >
+        curl -sfL https://get.k3s.io | K3S_TOKEN=SECRET sh -s - server --cluster-init
+       
+- hosts: worker  
+  tasks:
+    - name: install k3s using k3s script
+      shell: >
+        curl -sfL https://get.k3s.io | K3S_TOKEN=SECRET sh -s - server --server https://192.168.2.140:6443
+
